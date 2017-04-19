@@ -30,29 +30,44 @@ namespace Console_Client
 
                 Thread thr = Thread.CurrentThread;
                 int idThread = thr.ManagedThreadId;
-                Console.WriteLine("Метод Main клиента выполняется в потоке:" + idThread);
+                //Console.WriteLine("Метод Main клиента выполняется в потоке:" + idThread);
                 IPHostEntry ipHost = Dns.Resolve("localhost");
                 IPAddress ipAddr = ipHost.AddressList[0];
                 IPEndPoint endpoint = new IPEndPoint(ipAddr, PORT);
                 Socket sClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+                string dataSend = "";
+
                 sClient.BeginConnect(endpoint, new AsyncCallback(ConnectCallback), sClient);
                 ConnectDone.WaitOne();
+                Console.WriteLine("\nВыберите действие: \n 1 - выборка по группе \n 2 - выборка по предмету \n 3 - выборка по фамилии\n");
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        Console.WriteLine("Введите номер группы: ");
+                        string number = Console.ReadLine();
+                        dataSend = choice + number;
+                        break;
+                    case "2":
+                        Console.WriteLine("Введите название предмета: ");
+                        string subject = Console.ReadLine();
+                        dataSend = choice + subject;
+                        break;
+                    case "3":
+                        Console.WriteLine("Введите фамилию: ");
+                        string surname = Console.ReadLine();
+                        dataSend = choice + surname;
+                        break;
+                    default:
+                        break;
+                }
+                
 
-                string dataSend = "\nThis is test:";
-                for (int i = 1; i < 200; i++)
-                    dataSend += "i = " + i.ToString() + "; ";
-                Console.WriteLine("\nБудем отправлять серверу сообщение:");
-                Console.WriteLine("\n" + dataSend);
-                byte[] bytesSend = Encoding.ASCII.GetBytes(dataSend + ".");
+                
+                byte[] bytesSend = Encoding.Unicode.GetBytes(dataSend + ".");
 
                 sClient.BeginSend(bytesSend, 0, bytesSend.Length, 0, new AsyncCallback(SendCallback), sClient);
-
-                for (int i = 0; i < 5; i++)
-                {
-                    Console.WriteLine("\n" + i);
-                    Thread.Sleep(100);
-                }
 
                 SendDone.WaitOne();
                 sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
@@ -77,7 +92,7 @@ namespace Console_Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            Console.WriteLine("\nМетод ConnectCallback клиента выполняется в потоке:" + idThread);
+            //Console.WriteLine("\nМетод ConnectCallback клиента выполняется в потоке:" + idThread);
             //Используем свойство  AsyncState интерфейса IAsyncResult для извлечения          
             //аргумента, который был передан в третьем параметре метода BeginConnect()          
             //Полученное значение явно приводим к типу Socket          
@@ -99,7 +114,7 @@ namespace Console_Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            Console.WriteLine("\nМетод SendCallback клиента выполняется в потоке:" + idThread);
+            //Console.WriteLine("\nМетод SendCallback клиента выполняется в потоке:" + idThread);
 
             Socket sClient = (Socket)ar.AsyncState;
             int lenBytesSend = sClient.EndSend(ar);
@@ -114,14 +129,14 @@ namespace Console_Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            Console.WriteLine("\nМетод ReceiveCallback клиента выполняется в потоке:" + idThread);
+            //Console.WriteLine("\nМетод ReceiveCallback клиента выполняется в потоке:" + idThread);
 
             Socket sClient = (Socket)ar.AsyncState;
             int lenBytesReceive = sClient.EndReceive(ar);
             // Полученные данные сохраняются в строке         
             if (lenBytesReceive > 0)
             {
-                dataReceive += Encoding.ASCII.GetString(bytesReceive, 0, lenBytesReceive);
+                dataReceive += Encoding.Unicode.GetString(bytesReceive, 0, lenBytesReceive);
                 sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
             }
             else

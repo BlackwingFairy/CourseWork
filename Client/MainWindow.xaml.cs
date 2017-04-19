@@ -23,6 +23,7 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+
         private const int PORT = 11000;
         private const int SIZE = 2048;
         //Строка и массив байт для получения данных от сервера 
@@ -48,11 +49,10 @@ namespace Client
         {
             try
             {
-                textBlock.Text = "";
-                globalTextBlock = textBlock;
+                textBox.Text = "";
                 Thread thr = Thread.CurrentThread;
                 int idThread = thr.ManagedThreadId;
-                textBlock.Text = textBlock.Text+"Метод Main клиента выполняется в потоке:" + idThread;
+                textBox.Text = textBox.Text+"Метод Main клиента выполняется в потоке:" + idThread;
                 IPHostEntry ipHost = Dns.Resolve("localhost");
                 IPAddress ipAddr = ipHost.AddressList[0];
                 IPEndPoint endpoint = new IPEndPoint(ipAddr, PORT);
@@ -64,15 +64,15 @@ namespace Client
                 string dataSend = "This is test:";
                 for (int i = 1; i < 200; i++)
                     dataSend += "i = " + i.ToString() + ";";
-                globalTextBlock.Text = globalTextBlock.Text + "\nБудем отправлять серверу сообщение:";
-                globalTextBlock.Text = globalTextBlock.Text + "\n" + dataSend;
+                textBox.Text = textBox.Text + "\nБудем отправлять серверу сообщение:";
+                textBox.Text = textBox.Text +"\n" + dataSend;
                 byte[] bytesSend = Encoding.ASCII.GetBytes(dataSend + ".");
 
                 sClient.BeginSend(bytesSend, 0, bytesSend.Length, 0, new AsyncCallback(SendCallback), sClient);
 
                 for(int i = 0; i < 5; i++)
                 {
-                    globalTextBlock.Text= globalTextBlock.Text+"\n" +i;
+                    textBox.Text = textBox.Text +"\n" +i;
                     Thread.Sleep(100);
                 }
 
@@ -80,7 +80,7 @@ namespace Client
                 sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
 
                 ReceiveDone.WaitOne();
-                globalTextBlock.Text = globalTextBlock.Text + "\nПолучено от сервера: " +dataReceive;
+                textBox.Text = textBox.Text + "\nПолучено от сервера: " +dataReceive;
                 sClient.Shutdown(SocketShutdown.Both);
                 sClient.Close();
             }
@@ -95,15 +95,17 @@ namespace Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            globalTextBlock.Text = globalTextBlock.Text + "\nМетод ConnectCallback клиента выполняется в потоке:" + idThread;
+            //globalTextBlock.Text = globalTextBlock.Text + "\nМетод ConnectCallback клиента выполняется в потоке:" + idThread;
+
             //Используем свойство  AsyncState интерфейса IAsyncResult для извлечения          
             //аргумента, который был передан в третьем параметре метода BeginConnect()          
             //Полученное значение явно приводим к типу Socket          
             Socket sClient = (Socket)ar.AsyncState;
             //Завершаем асинхронный запрос         
             sClient.EndConnect(ar);
-            //Выводим удаленную конечную точку, с которой установлено соединение         
-            globalTextBlock.Text = globalTextBlock.Text + "\nСокет соединился с точкой: " + sClient.RemoteEndPoint;
+            //Выводим удаленную конечную точку, с которой установлено соединение 
+                    
+            //globalTextBlock.Text = globalTextBlock.Text + "\nСокет соединился с точкой: " + sClient.RemoteEndPoint;
 
             //Сообщаем основному потоку, что завершили установление соединения.         
             //Для этого устанавливаем объект ConnectDone в сигнальное состояние с          
@@ -117,11 +119,11 @@ namespace Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            globalTextBlock.Text = globalTextBlock.Text + "\nМетод SendCallback клиента выполняется в потоке:" + idThread;
+            //globalTextBlock.Text = globalTextBlock.Text + "\nМетод SendCallback клиента выполняется в потоке:" + idThread;
 
             Socket sClient = (Socket)ar.AsyncState;
             int lenBytesSend = sClient.EndSend(ar);
-            globalTextBlock.Text = globalTextBlock.Text + "Отправлено серверу " + lenBytesSend + " байт.";
+            //globalTextBlock.Text = globalTextBlock.Text + "Отправлено серверу " + lenBytesSend + " байт.";
             SendDone.Set();
         }
 
@@ -132,7 +134,7 @@ namespace Client
             Thread thr = Thread.CurrentThread;   //Получаем текущий поток          
             int idThread = thr.ManagedThreadId;  //Получаем идентификатор потока    
 
-            globalTextBlock.Text = globalTextBlock.Text + "\nМетод ReceiveCallback клиента выполняется в потоке:" + idThread;
+            //globalTextBlock.Text = globalTextBlock.Text + "\nМетод ReceiveCallback клиента выполняется в потоке:" + idThread;
 
             Socket sClient = (Socket)ar.AsyncState;
             int lenBytesReceive = sClient.EndReceive(ar);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,6 +12,8 @@ namespace Server
 {
     class Server
     {
+        SQLiteConnection connection = new SQLiteConnection("Data Source=" + @"appdata.db");
+
         private const int PORT = 11000;
         private const int SIZE = 2048;
         private const int LEN = 10;
@@ -23,7 +26,7 @@ namespace Server
             try {
                 Thread thr = Thread.CurrentThread;
                 int idThread = thr.ManagedThreadId;
-                Console.WriteLine("Идентификатор основного потока сервера: " + idThread);
+                //Console.WriteLine("Идентификатор основного потока сервера: " + idThread);
                 //byte[] bytes = new byte[SIZE];
                 IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, PORT);
                 Socket sListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -49,7 +52,7 @@ namespace Server
         {
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
-            Console.WriteLine("Идентификатор потока выполнения метода AcceptCallback: " + idThread);
+            //Console.WriteLine("Идентификатор потока выполнения метода AcceptCallback: " + idThread);
             Socket listener = (Socket)ar.AsyncState;
             Socket client_soc = listener.EndAccept(ar);
             client_soc.BeginReceive(buffer, 0, buffer.Length, 0, new AsyncCallback(ReceiveCallback), client_soc);
@@ -60,26 +63,69 @@ namespace Server
         {
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
-            Console.WriteLine("Идентификатор потока выполнения метода ReceiveCallback: " + idThread);
+            //Console.WriteLine("Идентификатор потока выполнения метода ReceiveCallback: " + idThread);
             string content = String.Empty;
             Socket client_soc = (Socket)ar.AsyncState;
             int lenByteReceive = client_soc.EndReceive(ar);
 
             if (lenByteReceive > 0)
             {
-                content += Encoding.ASCII.GetString(buffer, 0, lenByteReceive);
+                content += Encoding.Unicode.GetString(buffer, 0, lenByteReceive);
 
                 if (content.IndexOf(".") > -1)
                 {
                     Console.WriteLine("Получено от клиента {0} байт", lenByteReceive);
                     Console.WriteLine("Сообщение: {0}", content);
 
-                    //место для нашего кода
+                    if (content.Remove(content.Length - 1, 1) != "")
+                    {
+                        string choice = content.Remove(1, content.Length - 1);
+                        string data = content.Substring(1, content.Length - 2);
+                        switch (choice)
+                        {
+                            case "1":
+                                string newmsg = DataWorker.Load_Group(data);
+                                byte[] byteSend = Encoding.Unicode.GetBytes(newmsg);
+                                if (newmsg == "")
+                                {
+                                    newmsg = "Совпадений нет";
+                                }
+                                // Отправляем сообщение клиенту                      
+                                client_soc.BeginSend(byteSend, 0, byteSend.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                break;
+                            case "2":
+                                string newmsg2 = DataWorker.Load_Subject(data);
+                                byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg2);
+                                if (newmsg2 == "")
+                                {
+                                    newmsg2 = "Совпадений нет";
+                                }
+                                // Отправляем сообщение клиенту                      
+                                client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                break;
+                            case "3":
+                                string newmsg3 = DataWorker.Load_Surname(data);
+                                byte[] byteSend3 = Encoding.Unicode.GetBytes(newmsg3);
+                                if (newmsg3 == "")
+                                {
+                                    newmsg3 = "Совпадений нет";
+                                }
+                                // Отправляем сообщение клиенту                      
+                                client_soc.BeginSend(byteSend3, 0, byteSend3.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                break;
+                            default:
+                                Console.WriteLine("default");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Сообщение пустое");
+                    }
+                    
 
 
-                    byte[] byteSend = Encoding.ASCII.GetBytes(content);
-                    // Отправляем то же сообщение клиенту                      
-                    client_soc.BeginSend(byteSend, 0, byteSend.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                    
                 }
                 else
                 {
@@ -94,7 +140,7 @@ namespace Server
         {
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
-            Console.WriteLine("Идентификатор потока выполнения SendCallback: " + idThread);
+            //Console.WriteLine("Идентификатор потока выполнения SendCallback: " + idThread);
             Socket client_soc = (Socket)ar.AsyncState;
             int lenByteSend = client_soc.EndSend(ar);
             Console.WriteLine("Послано клиенту {0} байт", lenByteSend);
