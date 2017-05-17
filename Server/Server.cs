@@ -24,6 +24,7 @@ namespace Server
         public static void Main(string[] args)
         {
             try {
+                
                 Thread thr = Thread.CurrentThread;
                 int idThread = thr.ManagedThreadId;
                 //Console.WriteLine("Идентификатор основного потока сервера: " + idThread);
@@ -32,10 +33,16 @@ namespace Server
                 Socket sListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 sListener.Bind(localEndPoint);
                 sListener.Listen(LEN);
-                Console.WriteLine("Сервер ожидает подключения клиента");
-                AsyncCallback aCallback = new AsyncCallback(AcceptCallback);
-                sListener.BeginAccept(aCallback, sListener);
-                socketEvent.WaitOne();
+
+                while (true)
+                {
+                    socketEvent.Reset();
+                    Console.WriteLine("Сервер ожидает подключения клиента");
+                    AsyncCallback aCallback = new AsyncCallback(AcceptCallback);
+                    sListener.BeginAccept(aCallback, sListener);
+                    socketEvent.WaitOne();
+                }
+                
             }
             catch (Exception e)
             {
@@ -50,6 +57,7 @@ namespace Server
 
         public static void AcceptCallback(IAsyncResult ar)
         {
+            socketEvent.Set();
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
             //Console.WriteLine("Идентификатор потока выполнения метода AcceptCallback: " + idThread);
@@ -86,32 +94,30 @@ namespace Server
                             case "1":
                                 string newmsg = DataWorker.Load_Group(data);
                                 byte[] byteSend = Encoding.Unicode.GetBytes(newmsg);
-                                if (newmsg == "")
-                                {
-                                    newmsg = "Совпадений нет";
-                                }
                                 // Отправляем сообщение клиенту                      
                                 client_soc.BeginSend(byteSend, 0, byteSend.Length, 0, new AsyncCallback(SendCallback), client_soc);
                                 break;
                             case "2":
-                                string newmsg2 = DataWorker.Load_Subject(data);
-                                byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg2);
-                                if (newmsg2 == "")
-                                {
-                                    newmsg2 = "Совпадений нет";
-                                }
+                                newmsg = DataWorker.Load_Subject(data);
+                                byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg);
+                                
                                 // Отправляем сообщение клиенту                      
                                 client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
                                 break;
-                            case "3":
-                                string newmsg3 = DataWorker.Load_Surname(data);
-                                byte[] byteSend3 = Encoding.Unicode.GetBytes(newmsg3);
-                                if (newmsg3 == "")
-                                {
-                                    newmsg3 = "Совпадений нет";
-                                }
+                            case "0":
+                                newmsg = DataWorker.Load_Surname(data);
+                                byte[] byteSend3 = Encoding.Unicode.GetBytes(newmsg);
+                                
                                 // Отправляем сообщение клиенту                      
                                 client_soc.BeginSend(byteSend3, 0, byteSend3.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                break;
+                            case "3":
+                                string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                DataWorker.Add_Record(items[0], items[1], items[2], items[3]);
+                                break;
+                            case "4":
+                                items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                DataWorker.Delete_Record(items[0], items[1], items[2], items[3]);
                                 break;
                             default:
                                 Console.WriteLine("default");
