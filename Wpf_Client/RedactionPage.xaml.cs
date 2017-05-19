@@ -32,11 +32,15 @@ namespace Wpf_Client
         public static ManualResetEvent ConnectDone = new ManualResetEvent(false);
         public static ManualResetEvent SendDone = new ManualResetEvent(false);
         public static ManualResetEvent ReceiveDone = new ManualResetEvent(false);
+        int textCounter = 0;
 
         public RedactionPage()
         {
             InitializeComponent();
         }
+
+
+
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
@@ -64,19 +68,26 @@ namespace Wpf_Client
 
                 dataSend = "3" + textBox1.Text + " " + textBox2.Text + " " + textBox3.Text + " " + textBox4.Text;
 
-
-
+                
                 byte[] bytesSend = Encoding.Unicode.GetBytes(dataSend + ".");
 
                 sClient.BeginSend(bytesSend, 0, bytesSend.Length, 0, new AsyncCallback(SendCallback), sClient);
 
                 SendDone.WaitOne();
-                //sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
+                sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
 
-                //ReceiveDone.WaitOne();
+                ReceiveDone.WaitOne();
+                if (dataReceive == "error")
+                {
+                    labelError.Visibility = Visibility.Visible;
+                }
 
                 sClient.Shutdown(SocketShutdown.Both);
                 sClient.Close();
+                
+                    
+                
+
             }
             catch (Exception ex)
             {
@@ -84,9 +95,10 @@ namespace Wpf_Client
             }
             finally
             {
-                //Console.ReadKey();
-            }            
+                //
+            }
         }
+    
 
 
 
@@ -147,7 +159,7 @@ namespace Wpf_Client
 
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void button_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -170,9 +182,22 @@ namespace Wpf_Client
                 sClient.BeginConnect(endpoint, new AsyncCallback(ConnectCallback), sClient);
                 ConnectDone.WaitOne();
 
+                switch (comboBox.SelectedIndex)
+                {
+                    case 0:
+                        dataSend = "4" + textBox5.Text;
+                        break;
+                    case 1:
+                        dataSend = "5" + textBox5.Text;
+                        break;
+                    case 2:
+                        dataSend = "6" + textBox5.Text;
+                        break;
+                    default:
+                        break;
+                }
 
-                dataSend = "4" + textBox1.Text + " " + textBox2.Text + " " + textBox3.Text + " " + textBox4.Text;
-
+                
 
 
                 byte[] bytesSend = Encoding.Unicode.GetBytes(dataSend + ".");
@@ -180,20 +205,28 @@ namespace Wpf_Client
                 sClient.BeginSend(bytesSend, 0, bytesSend.Length, 0, new AsyncCallback(SendCallback), sClient);
 
                 SendDone.WaitOne();
-                //sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
+                sClient.BeginReceive(bytesReceive, 0, bytesReceive.Length, 0, new AsyncCallback(ReceiveCallback), sClient);
 
-                //ReceiveDone.WaitOne();
+                ReceiveDone.WaitOne();
+                if (dataReceive == "error")
+                {
+                    labelError2.Visibility = Visibility.Visible;
+                }
 
                 sClient.Shutdown(SocketShutdown.Both);
                 sClient.Close();
+
+
+
+
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("\nException");
+                labelError2.Visibility = Visibility.Visible;
             }
             finally
             {
-                //Console.ReadKey();
+                //
             }
         }
     }

@@ -113,12 +113,18 @@ namespace Wpf_Client
                 //Console.ReadKey();
             }
 
-           
+            if (dataReceive == "error")
+            {
+                labelError.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                //передача данных второй странице
+                DataPage page = new DataPage(dataReceive);
 
-            //передача данных второй странице
-            DataPage page = new DataPage(dataReceive);
-
-            NavigationService.Navigate(page);
+                NavigationService.Navigate(page);
+            }
+            
         }
 
 

@@ -24,11 +24,30 @@ namespace Server
             connect.Close();
         }
 
-        public static void Delete_Record(string name, string group, string subject, string mark)
+        public static void Delete_Name(string name)
         {
             SQLiteConnection connect = new SQLiteConnection("Data Source=" + @"appdata.db");
             connect.Open();
-            SQLiteCommand command = new SQLiteCommand("DELETE FROM 'Students' WHERE Name='" + name + "' AND Subject='" + subject + "';", connect);
+            SQLiteCommand command = new SQLiteCommand("DELETE FROM 'Students' WHERE Name='" + name + "';", connect);
+            command.ExecuteNonQuery();
+            connect.Close();
+        }
+
+
+        public static void Delete_Group(string group)
+        {
+            SQLiteConnection connect = new SQLiteConnection("Data Source=" + @"appdata.db");
+            connect.Open();
+            SQLiteCommand command = new SQLiteCommand("DELETE FROM 'Students' WHERE Group='" + group + "';", connect);
+            command.ExecuteNonQuery();
+            connect.Close();
+        }
+
+        public static void Delete_Subject(string subject)
+        {
+            SQLiteConnection connect = new SQLiteConnection("Data Source=" + @"appdata.db");
+            connect.Open();
+            SQLiteCommand command = new SQLiteCommand("DELETE FROM 'Students' WHERE Subject='" + subject + "';", connect);
             command.ExecuteNonQuery();
             connect.Close();
         }

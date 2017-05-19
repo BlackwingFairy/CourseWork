@@ -51,6 +51,7 @@ namespace Server
             finally
             {
                 Console.ReadKey();
+                
             }
         } //Main 
 
@@ -75,6 +76,7 @@ namespace Server
             string content = String.Empty;
             Socket client_soc = (Socket)ar.AsyncState;
             int lenByteReceive = client_soc.EndReceive(ar);
+            
 
             if (lenByteReceive > 0)
             {
@@ -89,38 +91,116 @@ namespace Server
                     {
                         string choice = content.Remove(1, content.Length - 1);
                         string data = content.Substring(1, content.Length - 2);
+
                         switch (choice)
                         {
                             case "1":
-                                string newmsg = DataWorker.Load_Group(data);
-                                byte[] byteSend = Encoding.Unicode.GetBytes(newmsg);
-                                // Отправляем сообщение клиенту                      
-                                client_soc.BeginSend(byteSend, 0, byteSend.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    string newmsg = DataWorker.Load_Group(items[0]);
+                                    byte[] byteSend1 = Encoding.Unicode.GetBytes(newmsg);
+                                    client_soc.BeginSend(byteSend1, 0, byteSend1.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+
+                                    byte[] byteSend1 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend1, 0, byteSend1.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
                                 break;
                             case "2":
-                                newmsg = DataWorker.Load_Subject(data);
-                                byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg);
-                                
-                                // Отправляем сообщение клиенту                      
-                                client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    string newmsg = DataWorker.Load_Subject(items[0]);
+                                    byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg);
+                                    // Отправляем сообщение клиенту                      
+                                    client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+
+                                    byte[] byteSend2 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
                                 break;
                             case "0":
-                                newmsg = DataWorker.Load_Surname(data);
-                                byte[] byteSend3 = Encoding.Unicode.GetBytes(newmsg);
-                                
-                                // Отправляем сообщение клиенту                      
-                                client_soc.BeginSend(byteSend3, 0, byteSend3.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    string newmsg = DataWorker.Load_Surname(items[0]);
+                                    byte[] byteSend0 = Encoding.Unicode.GetBytes(newmsg);
+                                    // Отправляем сообщение клиенту                      
+                                    client_soc.BeginSend(byteSend0, 0, byteSend0.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+
+                                    byte[] byteSend0 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend0, 0, byteSend0.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
                                 break;
                             case "3":
-                                string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                DataWorker.Add_Record(items[0], items[1], items[2], items[3]);
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    DataWorker.Add_Record(items[0], items[1], items[2], items[3]);
+                                    byte[] byteSend3 = Encoding.Unicode.GetBytes("3");
+                                    client_soc.BeginSend(byteSend3, 0, byteSend3.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+                                    byte[] byteSend3 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend3, 0, byteSend3.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
                                 break;
                             case "4":
-                                items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                DataWorker.Delete_Record(items[0], items[1], items[2], items[3]);
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    DataWorker.Delete_Name(items[0]);
+                                    byte[] byteSend4 = Encoding.Unicode.GetBytes("4");
+                                    client_soc.BeginSend(byteSend4, 0, byteSend4.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+                                    byte[] byteSend4 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend4, 0, byteSend4.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                break;
+                            case "5":
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    DataWorker.Delete_Group(items[0]);
+                                    byte[] byteSend5 = Encoding.Unicode.GetBytes("5");
+                                    client_soc.BeginSend(byteSend5, 0, byteSend5.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+                                    byte[] byteSend5 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend5, 0, byteSend5.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                break;
+                                
+                            case "6":
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    DataWorker.Delete_Subject(items[0]);
+                                    byte[] byteSend6 = Encoding.Unicode.GetBytes("6");
+                                    client_soc.BeginSend(byteSend6, 0, byteSend6.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+                                    byte[] byteSend6 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend6, 0, byteSend6.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
                                 break;
                             default:
-                                Console.WriteLine("default");
+                                byte[] byteSend = Encoding.Unicode.GetBytes("error");
+                                client_soc.BeginSend(byteSend, 0, byteSend.Length, 0, new AsyncCallback(SendCallback), client_soc);
                                 break;
                         }
                     }

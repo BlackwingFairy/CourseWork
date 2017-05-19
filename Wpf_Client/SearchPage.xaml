@@ -16,11 +16,13 @@
                 <ComboBoxItem Content="Выборка по группе"/>
                 <ComboBoxItem Content="Выборка по предмету"/>
             </ComboBox>
-            <Label x:Name="label2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Collapsed"></Label>
-            <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Collapsed"
+            <Label x:Name="label2" HorizontalAlignment="Stretch" VerticalAlignment="Top"></Label>
+            <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                      TextWrapping="Wrap" MinLines="1" MaxLines="1" Width="auto" Height="auto" Margin="5,5,5,5"></TextBox>
             <Button x:Name="button" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Width="auto"
-                    Height="auto" Content ="Запрос" Visibility="Collapsed" Click="button_Click"></Button>
+                    Height="auto" Content ="Запрос"  Click="button_Click"></Button>
+            <Label x:Name="labelError" HorizontalAlignment="Stretch" VerticalAlignment="Top" Content="Заполните все поля!"
+                   Visibility="Collapsed"/>
         </StackPanel>
 
     </Grid>
