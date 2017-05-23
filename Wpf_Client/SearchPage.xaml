@@ -8,22 +8,26 @@
       HorizontalAlignment = "Stretch" VerticalAlignment="Stretch" 
       Title="SearchPage">
 
-    <Grid>
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,20,20,20">
-            <Label x:Name="label1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Content="Выберите действие:"></Label>
-            <ComboBox x:Name="comboBox" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Top" Width="auto" SelectionChanged="comboBox_SelectionChanged">
-                <ComboBoxItem Content="Выборка по фамилии"/>
-                <ComboBoxItem Content="Выборка по группе"/>
-                <ComboBoxItem Content="Выборка по предмету"/>
-            </ComboBox>
-            <Label x:Name="label2" HorizontalAlignment="Stretch" VerticalAlignment="Top"></Label>
-            <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,20,20,20">
+                <Label x:Name="label1" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="14" Content="Выберите действие:"></Label>
+                <ComboBox x:Name="comboBox" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Top" Width="auto" SelectionChanged="comboBox_SelectionChanged">
+                    <ComboBoxItem Content="Выборка по фамилии"/>
+                    <ComboBoxItem Content="Выборка по группе"/>
+                    <ComboBoxItem Content="Выборка по предмету"/>
+                    <ComboBoxItem Content="Показать всю таблицу"/>
+                </ComboBox>
+                <Label x:Name="label2" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="14"></Label>
+                <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                      TextWrapping="Wrap" MinLines="1" MaxLines="1" Width="auto" Height="auto" Margin="5,5,5,5"></TextBox>
-            <Button x:Name="button" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Width="auto"
+                <Button x:Name="button" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Width="auto"
                     Height="auto" Content ="Запрос"  Click="button_Click"></Button>
-            <Label x:Name="labelError" HorizontalAlignment="Stretch" VerticalAlignment="Top" Content="Заполните все поля!"
+                <Label x:Name="labelError" HorizontalAlignment="Stretch" VerticalAlignment="Top" Content="Заполните все поля!"
                    Visibility="Collapsed"/>
-        </StackPanel>
+            </StackPanel>
 
-    </Grid>
+        </Grid>
+    </ScrollViewer>
+    
 </Page>

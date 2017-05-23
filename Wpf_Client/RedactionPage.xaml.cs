@@ -66,7 +66,7 @@ namespace Wpf_Client
                 ConnectDone.WaitOne();
 
 
-                dataSend = "3" + textBox1.Text + " " + textBox2.Text + " " + textBox3.Text + " " + textBox4.Text;
+                dataSend = "7" + textBox1.Text + " " + textBox2.Text + " " + textBox3.Text + " " + textBox4.Text;
 
                 
                 byte[] bytesSend = Encoding.Unicode.GetBytes(dataSend + ".");

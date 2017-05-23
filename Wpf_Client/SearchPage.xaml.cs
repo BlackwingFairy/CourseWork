@@ -34,6 +34,7 @@ namespace Wpf_Client
         public static ManualResetEvent ConnectDone = new ManualResetEvent(false);
         public static ManualResetEvent SendDone = new ManualResetEvent(false);
         public static ManualResetEvent ReceiveDone = new ManualResetEvent(false);
+        public static string comment;
 
 
         public SearchPage()
@@ -47,19 +48,28 @@ namespace Wpf_Client
             {
                 case 0:
                     label2.Content = "Введите фамилию:";
+                    label2.Visibility = Visibility.Visible;
+                    textBox.Visibility = Visibility.Visible;
                     break;
                 case 1:
                     label2.Content = "Введите группу:";
+                    label2.Visibility = Visibility.Visible;
+                    textBox.Visibility = Visibility.Visible;
                     break;
                 case 2:
                     label2.Content = "Введите предмет:";
+                    label2.Visibility = Visibility.Visible;
+                    textBox.Visibility = Visibility.Visible;
+                    break;
+                case 3:
+                    label2.Visibility = Visibility.Hidden;
+                    textBox.Visibility = Visibility.Hidden;
                     break;
                 default:
                     break;
             }
 
-            label2.Visibility = Visibility.Visible;
-            textBox.Visibility = Visibility.Visible;
+            
             button.Visibility = Visibility.Visible;
         }
 
@@ -119,10 +129,19 @@ namespace Wpf_Client
             }
             else
             {
-                //передача данных второй странице
-                DataPage page = new DataPage(dataReceive);
+                if (comboBox.SelectedIndex < 3)
+                {
+                    DataPage page = new DataPage(dataReceive, "Условие поиска: "+textBox.Text);
+                    NavigationService.Navigate(page);
+                }
+                else
+                {
+                    DataPage page = new DataPage(dataReceive, "Условие поиска: все записи");
+                    NavigationService.Navigate(page);
+                }
+                
 
-                NavigationService.Navigate(page);
+                
             }
             
         }

@@ -22,11 +22,13 @@ namespace Wpf_Client
     public partial class DataPage : Page
     {
         private string dataReceive;
+        private string comment;
 
-        public DataPage(string dataReceive)
+        public DataPage(string dataReceive, string comment)
         {
             InitializeComponent();
             this.dataReceive = dataReceive;
+            this.comment = comment;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -49,6 +51,7 @@ namespace Wpf_Client
             }
 
             dataGrid.ItemsSource = records;
+            label.Content = comment;
             
         }
     }

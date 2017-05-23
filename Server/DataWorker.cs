@@ -85,6 +85,34 @@ namespace Server
             return result;
         }
 
+        public static string Load_All()
+        {
+            SQLiteConnection connect = new SQLiteConnection("Data Source=" + @"appdata.db");
+            connect.Open();
+            string result = "";
+
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM 'Students';", connect);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            foreach (DbDataRecord record in reader)
+            {
+                string group = record["Group"].ToString();
+                string name = record["Name"].ToString();
+                string subject = record["Subject"].ToString();
+                string mark = record["Mark"].ToString();
+                string srecord = "\n" + name + " " + group + " " + subject + " " + mark;
+
+                result += srecord;
+                
+
+            }
+
+            connect.Close();
+
+
+            return result;
+        }
+
         public static string Load_Subject(string subject)
         {
             SQLiteConnection connect = new SQLiteConnection("Data Source=" + @"appdata.db");

@@ -8,8 +8,16 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="DataPage" Loaded="Page_Loaded">
 
-    <Grid>
-        <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Top" AutoGenerateColumns="True"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
 
-    </Grid>
+            <StackPanel HorizontalAlignment="Center" Height="auto" VerticalAlignment="Top" Width="auto" Orientation="Horizontal">
+                <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Top" AutoGenerateColumns="True"/>
+                <Label x:Name="label" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20" FontSize="16"/>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+    
 </Page>

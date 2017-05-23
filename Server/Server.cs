@@ -61,7 +61,7 @@ namespace Server
             socketEvent.Set();
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
-            //Console.WriteLine("Идентификатор потока выполнения метода AcceptCallback: " + idThread);
+            
             Socket listener = (Socket)ar.AsyncState;
             Socket client_soc = listener.EndAccept(ar);
             client_soc.BeginReceive(buffer, 0, buffer.Length, 0, new AsyncCallback(ReceiveCallback), client_soc);
@@ -72,7 +72,7 @@ namespace Server
         {
             Thread thr = Thread.CurrentThread;
             int idThread = thr.ManagedThreadId;
-            //Console.WriteLine("Идентификатор потока выполнения метода ReceiveCallback: " + idThread);
+            
             string content = String.Empty;
             Socket client_soc = (Socket)ar.AsyncState;
             int lenByteReceive = client_soc.EndReceive(ar);
@@ -115,7 +115,7 @@ namespace Server
                                     string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                                     string newmsg = DataWorker.Load_Subject(items[0]);
                                     byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg);
-                                    // Отправляем сообщение клиенту                      
+                                                        
                                     client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
                                 }
                                 catch
@@ -142,6 +142,22 @@ namespace Server
                                 }
                                 break;
                             case "3":
+                                try
+                                {
+                                    string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    string newmsg = DataWorker.Load_All();
+                                    byte[] byteSend2 = Encoding.Unicode.GetBytes(newmsg);
+
+                                    client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                catch
+                                {
+
+                                    byte[] byteSend2 = Encoding.Unicode.GetBytes("error");
+                                    client_soc.BeginSend(byteSend2, 0, byteSend2.Length, 0, new AsyncCallback(SendCallback), client_soc);
+                                }
+                                break;
+                            case "7":
                                 try
                                 {
                                     string[] items = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -215,7 +231,7 @@ namespace Server
                 }
                 else
                 {
-                    //Иначе получаем оставшиеся данные
+                    
                     client_soc.BeginReceive(buffer, 0, buffer.Length, 0, new AsyncCallback(ReceiveCallback), client_soc);
                 }
             }
